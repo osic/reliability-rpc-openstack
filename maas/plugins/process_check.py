@@ -16,10 +16,9 @@
 import argparse
 import os
 
-from maas_common import metric_bool
+from maas_common import metric
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
 
 
 def get_process_name(pid):
@@ -88,14 +87,11 @@ def check_process_running(process_names, container_name=None):
         # Unable to get a list of process names for the container or host.
         status_err('Could not get a list of running processes')
 
-    # Since we've fetched a process list, report status_ok.
-    status_ok()
-
     # Report the presence of each process from the command line in the
     # running process list for the host or specified container.
     for process_name in process_names:
-        metric_bool('%s_process_status' % process_name,
-                    process_name in procs)
+        metric('process_check', '%s_process_status' % process_name,
+               str(int(process_name in procs)))
 
 
 def main(args):

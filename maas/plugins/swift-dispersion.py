@@ -66,15 +66,10 @@ def print_metrics(report_for, match):
             # and "partition_copies" groups end up in the dictionary with
             # value None so we need to ignore them when they are found.
             continue
-        if k.endswith('percent'):
-            metric_type = 'double'
-        else:
-            metric_type = 'uint64'
 
-        # Add units when we can
-        unit = 's' if k == 'seconds' else None
-        maas_common.metric('{0}_{1}'.format(report_for, k), metric_type, v,
-                           unit)
+        maas_common.metric('swift_dispersion',
+                           '{0}_{1}'.format(report_for, k),
+                           v)
 
 
 def main():
@@ -100,7 +95,6 @@ def main():
     if not (object_match and container_match):
         maas_common.status_err('Could not parse dispersion report output')
 
-    maas_common.status_ok()
     print_metrics('object', object_match)
     print_metrics('container', container_match)
 

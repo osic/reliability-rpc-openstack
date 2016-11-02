@@ -23,10 +23,8 @@ from maas_common import get_auth_ref
 from maas_common import get_keystone_client
 from maas_common import get_nova_client
 from maas_common import metric
-from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
 from novaclient.client import exceptions as exc
 
 SERVER_STATUSES = ['ACTIVE', 'STOPPED', 'ERROR']
@@ -64,18 +62,14 @@ def check(auth_ref, args):
         # gather some metrics
         status_count = collections.Counter([s.status for s in servers])
 
-    status_ok()
-    metric_bool('nova_api_local_status', is_up)
+    metric('nova_api', 'nova_api_local_status', str(int(is_up)))
     # only want to send other metrics if api is up
     if is_up:
-        metric('nova_api_local_response_time',
-               'double',
-               '%.3f' % milliseconds,
-               'ms')
+        metric('nova_api', 'nova_api_local_response_time',
+               '%.3f' % milliseconds)
         for status in SERVER_STATUSES:
-            metric('nova_instances_in_state_%s' % status,
-                   'uint32',
-                   status_count[status], 'instances')
+            metric('nova_api', 'nova_instances_in_state_%s' % status,
+                   status_count[status])
 
 
 def main(args):

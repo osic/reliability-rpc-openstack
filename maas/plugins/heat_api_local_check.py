@@ -23,10 +23,8 @@ from maas_common import get_auth_ref
 from maas_common import get_heat_client
 from maas_common import get_keystone_client
 from maas_common import metric
-from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
 
 
 def check(auth_ref, args):
@@ -55,14 +53,12 @@ def check(auth_ref, args):
         end = time.time()
         milliseconds = (end - start) * 1000
 
-    status_ok()
-    metric_bool('heat_api_local_status', is_up)
+    metric('heat_api', 'heat_api_local_status', str(int(is_up)))
     if is_up:
         # only want to send other metrics if api is up
-        metric('heat_api_local_response_time',
-               'double',
-               '%.3f' % milliseconds,
-               'ms')
+        metric('heat_api',
+               'heat_api_local_response_time',
+               '%.3f' % milliseconds)
 
 
 def main(args):

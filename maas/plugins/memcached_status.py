@@ -19,10 +19,8 @@ import re
 
 import ipaddr
 from maas_common import metric
-from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
 import memcache
 
 
@@ -65,11 +63,10 @@ def main(args):
                        'of memcached, and you are using version %s'
                        % (VERSIONS, current_version))
 
-    status_ok()
-    metric_bool('memcache_api_local_status', is_up)
+    metric('memcached', 'memcache_api_local_status', str(int(is_up)))
     if is_up:
         for m, u in MEMCACHE_METRICS.iteritems():
-            metric('memcache_%s' % m, 'uint64', stats[m], u)
+            metric('memcached', 'memcache_%s' % m, stats[m])
 
 
 if __name__ == '__main__':

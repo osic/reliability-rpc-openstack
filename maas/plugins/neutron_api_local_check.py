@@ -20,10 +20,8 @@ import time
 import ipaddr
 from maas_common import get_neutron_client
 from maas_common import metric
-from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
 from neutronclient.client import exceptions as exc
 
 
@@ -58,18 +56,15 @@ def check(args):
         routers = len(neutron.list_routers()['routers'])
         subnets = len(neutron.list_subnets()['subnets'])
 
-    status_ok()
-    metric_bool('neutron_api_local_status', is_up)
+    metric('neutron_api', 'neutron_api_local_status', str(int(is_up)))
     # only want to send other metrics if api is up
     if is_up:
-        metric('neutron_api_local_response_time',
-               'double',
-               '%.3f' % milliseconds,
-               'ms')
-        metric('neutron_networks', 'uint32', networks, 'networks')
-        metric('neutron_agents', 'uint32', agents, 'agents')
-        metric('neutron_routers', 'uint32', routers, 'agents')
-        metric('neutron_subnets', 'uint32', subnets, 'subnets')
+        metric('neutron_api', 'neutron_api_local_response_time',
+               '%.3f' % milliseconds)
+        metric('neutron_api', 'neutron_networks', networks)
+        metric('neutron_api', 'neutron_agents', agents)
+        metric('neutron_api', 'neutron_routers_agents', routers)
+        metric('neutron_api', 'neutron_subnets', subnets)
 
 
 def main(args):

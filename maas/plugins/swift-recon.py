@@ -322,11 +322,13 @@ def print_nested_stats(statistics):
 
 
 metrics_per_stat = {
-    'avg': lambda name, val: maas_common.metric(name, 'double', val),
-    'failed': lambda name, val: maas_common.metric(name, 'double', val[:-1])
+    'avg': lambda name, val: maas_common.metric('swift_recon', name, val),
+    'failed': lambda name, val: maas_common.metric('swift_recon',
+                                                   name,
+                                                   val[:-1])
 }
 
-DEFAULT_METRIC = lambda name, val: maas_common.metric(name, 'uint64', val)
+DEFAULT_METRIC = lambda name, val: maas_common.metric('swift_recon', name, val)
 
 
 def print_stats(prefix, statistics):
@@ -335,7 +337,7 @@ def print_stats(prefix, statistics):
     """
     for name, value in statistics.items():
         metric = metrics_per_stat.get(name, DEFAULT_METRIC)
-        metric('{0}_{1}'.format(prefix, name), value)
+        metric('swift_recon', '{0}_{1}'.format(prefix, name), value)
 
 
 def make_parser():
@@ -380,7 +382,6 @@ def main():
         maas_common.status_err(str(e))
 
     if stats:
-        maas_common.status_ok()
         print_nested_stats(stats)
 
 
