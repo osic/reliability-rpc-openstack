@@ -18,10 +18,8 @@ import argparse
 
 import ipaddr
 from maas_common import metric
-from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
 import requests
 from requests import exceptions as exc
 
@@ -46,14 +44,13 @@ def check(args):
     except Exception as e:
         status_err(str(e))
 
-    status_ok()
-    metric_bool('nova_api_metadata_local_status', is_up)
+    metric('nova_api_metadata',
+           'nova_api_metadata_local_status', str(int(is_up)))
     # only want to send other metrics if api is up
     if is_up:
-        metric('nova_api_metadata_local_response_time',
-               'double',
-               '%.3f' % milliseconds,
-               'ms')
+        metric('nova_api_metadata',
+               'nova_api_metadata_local_response_time',
+               '%.3f' % milliseconds)
 
 
 def main(args):

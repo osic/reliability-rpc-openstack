@@ -23,10 +23,8 @@ import ipaddr
 from maas_common import get_auth_ref
 from maas_common import get_keystone_client
 from maas_common import metric
-from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
 import requests
 from requests import exceptions as exc
 
@@ -75,24 +73,20 @@ def check(auth_ref, args):
         snap_status_count = collections.Counter(snap_statuses)
         total_snaps = len(snap.json()['snapshots'])
 
-    status_ok()
-    metric_bool('cinder_api_local_status', is_up)
+    metric('cinder_api', 'cinder_api_local_status', str(int(is_up)))
     # only want to send other metrics if api is up
     if is_up:
-        metric('cinder_api_local_response_time',
-               'double',
-               '%.3f' % milliseconds,
-               'ms')
-        metric('total_cinder_volumes', 'uint32', total_vols, 'volumes')
+        metric('cinder_api',
+               'cinder_api_local_response_time',
+               '%.3f' % milliseconds)
+        metric('cinder_api', 'total_cinder_volumes', total_vols)
         for status in VOLUME_STATUSES:
-            metric('cinder_%s_volumes' % status,
-                   'uint32',
-                   vol_status_count[status], 'volumes')
-        metric('total_cinder_snapshots', 'uint32', total_snaps, 'snapshots')
+            metric('cinder_api', 'cinder_%s_volumes' % status,
+                   vol_status_count[status])
+        metric('cinder_api', 'total_cinder_snapshots', total_snaps)
         for status in VOLUME_STATUSES:
-            metric('cinder_%s_snaps' % status,
-                   'uint32',
-                   snap_status_count[status], 'snapshots')
+            metric('cinder_api', 'cinder_%s_snaps' % status,
+                   snap_status_count[status])
 
 
 def main(args):

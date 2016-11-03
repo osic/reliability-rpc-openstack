@@ -21,10 +21,8 @@ import ipaddr
 from lxml import html
 from maas_common import get_auth_details
 from maas_common import metric
-from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
 import requests
 from requests import exceptions as exc
 
@@ -97,14 +95,13 @@ def check(args):
         login_status_code = l.status_code
         login_milliseconds = l.elapsed.total_seconds() * 1000
 
-    status_ok()
-    metric_bool('horizon_local_status', is_up)
+    metric('horizon', 'horizon_local_status', str(int(is_up)))
 
     if is_up:
-        metric('splash_status_code', 'uint32', splash_status_code, 'http_code')
-        metric('splash_milliseconds', 'double', splash_milliseconds, 'ms')
-        metric('login_status_code', 'uint32', login_status_code, 'http_code')
-        metric('login_milliseconds', 'double', login_milliseconds, 'ms')
+        metric('horizon', 'splash_status_http_code', splash_status_code)
+        metric('horizon', 'splash_milliseconds', splash_milliseconds)
+        metric('horizon', 'login_status_http_code', login_status_code)
+        metric('horizon', 'login_milliseconds', login_milliseconds)
 
 
 def main(args):

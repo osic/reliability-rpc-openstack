@@ -18,10 +18,10 @@ import re
 import subprocess
 import sys
 
-from maas_common import metric_bool
+from maas_common import metric
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
+
 
 SUPPORTED_VERSIONS = set(["7.1.0", "7.4.0"])
 OM_PATTERN = '(?:%(field)s)\s+:\s+(%(group_pattern)s)'
@@ -99,9 +99,8 @@ def main():
     except (OSError, subprocess.CalledProcessError) as e:
         status_err(str(e))
 
-    status_ok()
-    metric_bool('hardware_%s_status' % report_request,
-                all_okay(report, regex[report_type]))
+    metric('openmanage', 'hardware_%s_status' % report_request,
+           str(int(all_okay(report, regex[report_type]))))
 
 
 if __name__ == '__main__':

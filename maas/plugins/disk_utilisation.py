@@ -20,7 +20,6 @@ import subprocess
 from maas_common import metric
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
 
 
 def utilisation(time):
@@ -38,6 +37,5 @@ if __name__ == '__main__':
         except Exception as e:
             status_err(e)
         else:
-            status_ok()
             for util in utils:
-                metric('disk_utilisation_%s' % util[0], 'double', util[1], '%')
+                metric('system', 'disk_utilisation_%s' % util[0], util[1])

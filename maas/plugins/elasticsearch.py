@@ -22,7 +22,7 @@ import re
 from maas_common import metric
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
+
 import requests
 
 
@@ -130,9 +130,8 @@ def main():
     num_errors = get_number_of('ERROR', latest)
     num_warnings = get_number_of('WARN*', latest)
 
-    status_ok()
-    metric('NUMBER_OF_LOG_ERRORS', 'uint32', num_errors)
-    metric('NUMBER_OF_LOG_WARNINGS', 'uint32', num_warnings)
+    metric('elasticsearch', 'NUMBER_OF_LOG_ERRORS', num_errors)
+    metric('elasticsearch', 'NUMBER_OF_LOG_WARNINGS', num_warnings)
 
 
 if __name__ == '__main__':

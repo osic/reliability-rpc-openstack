@@ -21,7 +21,6 @@ import subprocess
 from maas_common import metric
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
 
 
 def galera_check(arg):
@@ -65,45 +64,45 @@ def parse_args():
 
 
 def print_metrics(replica_status):
-    status_ok()
-    metric('wsrep_replicated_bytes', 'int64',
-           replica_status['wsrep_replicated_bytes'], 'bytes')
-    metric('wsrep_received_bytes', 'int64',
-           replica_status['wsrep_received_bytes'], 'bytes')
-    metric('wsrep_commit_window_size', 'double',
-           replica_status['wsrep_commit_window'], 'sequence_delta')
-    metric('wsrep_cluster_size', 'int64',
-           replica_status['wsrep_cluster_size'], 'nodes')
-    metric('queries_per_second', 'int64',
-           replica_status['Queries'], 'qps')
-    metric('wsrep_cluster_state_uuid', 'string',
+
+    metric('galera', 'wsrep_replicated_bytes',
+           replica_status['wsrep_replicated_bytes'])
+    metric('galera', 'wsrep_received_bytes',
+           replica_status['wsrep_received_bytes'])
+    metric('galera', 'wsrep_commit_window_size',
+           replica_status['wsrep_commit_window'])
+    metric('galera', 'wsrep_cluster_size_nodes',
+           replica_status['wsrep_cluster_size'])
+    metric('galera', 'queries_per_second',
+           replica_status['Queries'])
+    metric('galera', 'wsrep_cluster_state_uuid',
            replica_status['wsrep_cluster_state_uuid'])
-    metric('wsrep_cluster_status', 'string',
+    metric('galera', 'wsrep_cluster_status',
            replica_status['wsrep_cluster_status'])
-    metric('wsrep_local_state_uuid', 'string',
+    metric('galera', 'wsrep_local_state_uuid',
            replica_status['wsrep_local_state_uuid'])
-    metric('wsrep_local_state_comment', 'string',
+    metric('galera', 'wsrep_local_state_comment',
            replica_status['wsrep_local_state_comment'])
-    metric('mysql_max_configured_connections', 'int64',
-           replica_status['max_connections'], 'connections')
-    metric('mysql_current_connections', 'int64',
-           replica_status['Threads_connected'], 'connections')
-    metric('mysql_max_seen_connections', 'int64',
-           replica_status['Max_used_connections'], 'connections')
-    metric('num_of_open_files', 'int64',
-           replica_status['Open_files'], 'files')
-    metric('open_files_limit', 'int64',
-           replica_status['open_files_limit'], 'files')
-    metric('innodb_row_lock_time_avg', 'int64',
-           replica_status['Innodb_row_lock_time_avg'], 'milliseconds')
-    metric('innodb_deadlocks', 'int64',
-           replica_status['Innodb_deadlocks'], 'deadlocks')
-    metric('access_denied_errors', 'int64',
-           replica_status['Access_denied_errors'], 'access_denied_errors')
-    metric('aborted_clients', 'int64',
-           replica_status['Aborted_clients'], 'aborted_clients')
-    metric('aborted_connects', 'int64',
-           replica_status['Aborted_connects'], 'aborted_connects')
+    metric('galera', 'mysql_max_configured_connections',
+           replica_status['max_connections'])
+    metric('galera', 'mysql_current_connections',
+           replica_status['Threads_connected'])
+    metric('galera', 'mysql_max_seen_connections',
+           replica_status['Max_used_connections'])
+    metric('galera', 'num_of_open_files',
+           replica_status['Open_files'])
+    metric('galera', 'open_files_limit',
+           replica_status['open_files_limit'])
+    metric('galera', 'innodb_row_lock_time_avg',
+           replica_status['Innodb_row_lock_time_avg'])
+    metric('galera', 'innodb_deadlocks',
+           replica_status['Innodb_deadlocks'])
+    metric('galera', 'access_denied_errors',
+           replica_status['Access_denied_errors'])
+    metric('galera', 'aborted_clients',
+           replica_status['Aborted_clients'])
+    metric('galera', 'aborted_connects',
+           replica_status['Aborted_connects'])
 
 
 def main():

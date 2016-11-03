@@ -24,7 +24,6 @@ from maas_common import get_nova_client
 from maas_common import metric
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
 
 # The actual stat names from novaclient are nasty, so this mapping is used to
 # translate them to something more consistent and usable, as well as set the
@@ -94,12 +93,11 @@ def check(auth_ref, args):
             cloud_stats[metric_name]['type'] = \
                 vals['type']
 
-    status_ok()
     for metric_name in cloud_stats.iterkeys():
-        metric('cloud_resource_%s' % metric_name,
-               cloud_stats[metric_name]['type'],
-               cloud_stats[metric_name]['value'],
-               cloud_stats[metric_name]['unit'])
+        metric('nova_cloud_stats'
+               'cloud_resource_%s_%s' % (metric_name,
+                                         cloud_stats[metric_name]['unit'], ),
+               cloud_stats[metric_name]['value'])
 
 
 def main(args):

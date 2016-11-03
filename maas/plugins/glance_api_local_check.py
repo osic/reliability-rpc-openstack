@@ -23,10 +23,8 @@ from glanceclient import exc as exc
 from maas_common import get_auth_ref
 from maas_common import get_glance_client
 from maas_common import metric
-from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
 
 
 IMAGE_STATUSES = ['active', 'queued', 'killed']
@@ -59,20 +57,15 @@ def check(auth_ref, args):
         images = glance.images.list(search_opts={'all_tenants': 1})
         status_count = collections.Counter([s.status for s in images])
 
-    status_ok()
-    metric_bool('glance_api_local_status', is_up)
+    metric('glance_api', 'glance_api_local_status', str(int(is_up)))
 
     # only want to send other metrics if api is up
     if is_up:
-        metric('glance_api_local_response_time',
-               'double',
-               '%.3f' % milliseconds,
-               'ms')
+        metric('glance_api', 'glance_api_local_response_time',
+               '%.3f' % milliseconds)
         for status in IMAGE_STATUSES:
-            metric('glance_%s_images' % status,
-                   'uint32',
-                   status_count[status],
-                   'images')
+            metric('glance_api', 'glance_%s_images' % status,
+                   status_count[status])
 
 
 def main(args):

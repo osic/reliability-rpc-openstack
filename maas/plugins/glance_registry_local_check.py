@@ -20,10 +20,8 @@ import ipaddr
 from maas_common import get_auth_ref
 from maas_common import get_keystone_client
 from maas_common import metric
-from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
-from maas_common import status_ok
 import requests
 from requests import exceptions as exc
 
@@ -50,13 +48,13 @@ def check(auth_ref, args):
     except Exception as e:
         status_err(str(e))
 
-    status_ok()
-    metric_bool('glance_registry_local_status', is_up)
+    metric('glance_registry', 'glance_registry_local_status', str(int(is_up)))
     # only want to send other metrics if api is up
     if is_up:
         milliseconds = r.elapsed.total_seconds() * 1000
-        metric('glance_registry_local_response_time', 'double',
-               '%.3f' % milliseconds, 'ms')
+        metric('glance_registry',
+               'glance_registry_local_response_time',
+               '%.3f' % milliseconds)
 
 
 def main(args):
