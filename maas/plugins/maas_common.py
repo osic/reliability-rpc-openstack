@@ -43,8 +43,8 @@ AUTH_DETAILS = {'OS_USERNAME': None,
 # v2 keystone auth is still necessary until RPCR switches over to v3 auth
 
 
-OPENRC = '/root/openrc-maas'
-TOKEN_FILE = '/root/.auth_ref.json'
+OPENRC = '/home/openrc-maas'
+TOKEN_FILE = '/home/.auth_ref.json'
 
 
 try:
