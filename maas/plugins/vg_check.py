@@ -21,6 +21,7 @@ import subprocess
 from maas_common import metric
 from maas_common import print_output
 from maas_common import status_err
+from maas_common import status_ok
 
 
 def run_command(arg):
@@ -43,10 +44,13 @@ def parse_args():
 
 
 def print_metrics(sizes, vgname):
-    metric('volume_group', 'name', vgname)
-    metric('volume_group', 'vg_total_megabytes_space', sizes['totalsize'])
-    metric('volume_group', 'vg_free_megabytes_space', sizes['free'])
-    metric('volume_group', 'vg_used_megabytes_space', sizes['used'])
+    status_ok()
+    metric('%s_vg_total_space' % vgname, 'int64',
+           sizes['totalsize'], 'Megabytes')
+    metric('%s_vg_free_space' % vgname, 'int64',
+           sizes['free'], 'Megabytes')
+    metric('%s_vg_used_space' % vgname, 'int64',
+           sizes['used'], 'Megabytes')
 
 
 def main():

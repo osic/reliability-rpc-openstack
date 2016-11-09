@@ -20,7 +20,9 @@ import ipaddr
 from maas_common import get_auth_ref
 from maas_common import get_keystone_client
 from maas_common import metric
+from maas_common import metric_bool
 from maas_common import print_output
+from maas_common import status_ok
 import requests
 from requests import exceptions as exc
 
@@ -60,15 +62,15 @@ def check(args):
     else:
         up = True
 
-    metric('{name}_api'.format(name=args.name),
-           '{name}_api_local_status'.format(name=args.name),
-           str(int(up)))
+    status_ok()
+    metric_bool('{name}_api_local_status'.format(name=args.name), up)
 
     if up and r.ok:
         milliseconds = r.elapsed.total_seconds() * 1000
-        metric('{name}_api'.format(name=args.name),
-               '{name}_api_local_response_time'.format(name=args.name),
-               '%.3f' % milliseconds,)
+        metric('{name}_api_local_response_time'.format(name=args.name),
+               'double',
+               '%.3f' % milliseconds,
+               'ms')
 
 
 def main(args):

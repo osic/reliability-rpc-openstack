@@ -19,9 +19,10 @@ import argparse
 from maas_common import get_auth_ref
 from maas_common import get_keystone_client
 from maas_common import get_nova_client
-from maas_common import metric
+from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
+from maas_common import status_ok
 
 
 def check(auth_ref, args):
@@ -51,6 +52,7 @@ def check(auth_ref, args):
         status_err("No host(s) found in the service list")
 
     # return all the things
+    status_ok()
     for service in services:
         service_is_up = True
 
@@ -62,7 +64,7 @@ def check(auth_ref, args):
         else:
             name = '%s_on_host_%s_status' % (service.binary, service.host)
 
-        metric('nova_service', name, str(int(service_is_up)))
+        metric_bool(name, service_is_up)
 
 
 def main(args):

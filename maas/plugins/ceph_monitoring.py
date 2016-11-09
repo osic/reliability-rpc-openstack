@@ -55,7 +55,7 @@ def get_mon_statistics(client=None, keyring=None, host=None):
         if each['name'] == host:
             health_status = STATUSES[each['health']]
             break
-    maas_common.metric('ceph_mon', 'mon_health', health_status)
+    maas_common.metric('mon_health', 'uint32', health_status)
 
 
 def get_osd_statistics(client=None, keyring=None, osd_ids=None):
@@ -70,17 +70,15 @@ def get_osd_statistics(client=None, keyring=None, osd_ids=None):
         else:
             msg = 'The OSD ID %s does not exist.' % osd_id
             raise maas_common.MaaSException(msg)
-        for key in ('up', 'in'):
-            name = '_'.join((osd_ref, key))
-            maas_common.metric_bool(name, osd[key])
+
+        key = 'up'
+        name = '_'.join((osd_ref, key))
+        maas_common.metric_bool(name, osd[key])
 
         for _osd in pg_osds_dump:
             if _osd['osd'] == osd_id:
                 osd = _osd
                 break
-        for key in ('kb', 'kb_used', 'kb_avail'):
-            name = '_'.join((osd_ref, key))
-            maas_common.metric('ceph_osd', name, osd[key])
 
 
 def get_cluster_statistics(client=None, keyring=None):
@@ -134,7 +132,7 @@ def get_cluster_statistics(client=None, keyring=None):
 
     # Submit gathered metrics
     for m in metrics:
-        maas_common.metric('ceph_culster', m['name'], m['value'])
+        maas_common.metric(m['name'], m['type'], m['value'])
 
 
 def get_args():
@@ -165,6 +163,7 @@ def main(args):
     if args.subparser_name == 'mon':
         kwargs['host'] = args.host
     get_statistics[args.subparser_name](**kwargs)
+    maas_common.status_ok()
 
 
 if __name__ == '__main__':

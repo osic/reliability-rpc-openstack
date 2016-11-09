@@ -19,9 +19,10 @@ import optparse
 import subprocess
 
 from maas_common import metric
+from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
-
+from maas_common import status_ok
 import requests
 
 OVERVIEW_URL = "http://%s:%s/api/overview"
@@ -182,15 +183,13 @@ def main():
                       options.name)
     _get_queue_metrics(session, metrics, options.host, options.port)
 
+    status_ok()
+
     for k, v in metrics.items():
         if v['value'] is True or v['value'] is False:
-            metric('rabbitmq',
-                   'rabbitmq_%s_status' % k,
-                   str(int(not v['value'])))
+            metric_bool('rabbitmq_%s_status' % k, not v['value'])
         else:
-            metric('rabbitmq',
-                   'rabbitmq_%s' % k,
-                   v['value'], v['unit'])
+            metric('rabbitmq_%s' % k, 'int64', v['value'], v['unit'])
 
 
 if __name__ == "__main__":
