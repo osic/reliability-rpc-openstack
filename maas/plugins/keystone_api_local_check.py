@@ -22,8 +22,10 @@ from keystoneclient import exceptions as exc
 from maas_common import get_auth_details
 from maas_common import get_keystone_client
 from maas_common import metric
+from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
+from maas_common import status_ok
 
 
 def check(args, auth_details):
@@ -60,14 +62,16 @@ def check(args, auth_details):
             project_count = len(keystone.projects.list())
             user_count = len(keystone.users.list(domain='Default'))
 
-    metric('keystone_api', 'keystone_api_local_status', str(int(is_up)))
+    status_ok()
+    metric_bool('keystone_api_local_status', is_up)
     # only want to send other metrics if api is up
     if is_up:
-        metric('keystone_api',
-               'keystone_api_local_response_time',
-               '%.3f' % milliseconds)
-        metric('keystone_api', 'keystone_user_count', user_count)
-        metric('keystone_api', 'keystone_tenant_count', project_count)
+        metric('keystone_api_local_response_time',
+               'double',
+               '%.3f' % milliseconds,
+               'ms')
+        metric('keystone_user_count', 'uint32', user_count, 'users')
+        metric('keystone_tenant_count', 'uint32', project_count, 'tenants')
 
 
 def main(args):

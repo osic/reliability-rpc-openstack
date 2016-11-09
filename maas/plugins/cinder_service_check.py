@@ -20,9 +20,10 @@ import argparse
 # consideres it third-party
 from maas_common import get_auth_ref
 from maas_common import get_keystone_client
-from maas_common import metric
+from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
+from maas_common import status_ok
 import requests
 from requests import exceptions as exc
 
@@ -70,6 +71,8 @@ def check(auth_ref, args):
     if len(services) == 0:
         status_err('No host(s) found in the service list')
 
+    status_ok()
+
     if args.host:
 
         for service in services:
@@ -83,7 +86,7 @@ def check(auth_ref, args):
                 [host, backend] = service['host'].split('@')
                 name = '%s-%s_status' % (service['binary'], backend)
 
-            metric('cinder_service', name, str(int(service_is_up)))
+            metric_bool(name, service_is_up)
     else:
         for service in services:
             service_is_up = True
@@ -91,7 +94,7 @@ def check(auth_ref, args):
                 service_is_up = False
 
             name = '%s_on_host_%s' % (service['binary'], service['host'])
-            metric('cinder_service', name, str(int(service_is_up)))
+            metric_bool(name, service_is_up)
 
 
 def main(args):

@@ -19,9 +19,10 @@ import shlex
 import subprocess
 
 from maas_common import get_neutron_client
-from maas_common import metric
+from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
+from maas_common import status_ok
 
 # identify the first active neutron agents container on this host
 # network namespaces can only be accessed from within neutron agents container
@@ -66,11 +67,11 @@ def check(args):
                 failures.append(net_id)
 
     is_ok = len(failures) == 0
-    metric('neutron_metadata',
-           'neutron-metadata-agent-proxy_status', str(int(is_ok)))
+    metric_bool('neutron-metadata-agent-proxy_status', is_ok)
 
-    if not is_ok:
-        metric('neutron_metadata', 'status', 0)
+    if is_ok:
+        status_ok()
+    else:
         status_err('neutron metadata agent proxies fail on host %s '
                    'net_ids: %s' % (container, ','.join(failures)))
 

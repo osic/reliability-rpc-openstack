@@ -17,9 +17,10 @@
 import argparse
 
 from maas_common import get_neutron_client
-from maas_common import metric
+from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
+from maas_common import status_ok
 
 
 def check(args):
@@ -42,6 +43,7 @@ def check(args):
         status_err("No host(s) found in the agents list")
 
     # return all the things
+    status_ok()
     for agent in agents:
         agent_is_up = True
         if agent['admin_state_up'] and not agent['alive']:
@@ -54,7 +56,7 @@ def check(args):
                                          agent['id'],
                                          agent['host'])
 
-        metric('neutron_service', name, str(int(agent_is_up)))
+        metric_bool(name, agent_is_up)
 
 
 def main(args):

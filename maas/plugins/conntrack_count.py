@@ -55,8 +55,9 @@ def main():
     except maas_common.MaaSException as e:
         maas_common.status_err(str(e))
     else:
+        maas_common.status_ok()
         for name, data in metrics.viewitems():
-            maas_common.metric('contrack', name, data['value'])
+            maas_common.metric(name, 'uint32', data['value'])
 
 
 if __name__ == '__main__':
