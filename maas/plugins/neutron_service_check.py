@@ -49,12 +49,8 @@ def check(args):
         if agent['admin_state_up'] and not agent['alive']:
             agent_is_up = False
 
-        if args.host:
-            name = '%s_status' % agent['binary']
-        else:
-            name = '%s_%s_on_host_%s' % (agent['binary'],
-                                         agent['id'],
-                                         agent['host'])
+        name = '%s_status' % agent['binary']
+
 
         metric_bool(name, agent_is_up)
 
