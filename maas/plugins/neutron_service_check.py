@@ -17,6 +17,7 @@
 import argparse
 
 from maas_common import get_neutron_client
+from maas_common import metric
 from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
@@ -44,15 +45,28 @@ def check(args):
 
     # return all the things
     status_ok()
+    services_up = 0
+    services_down = 0
+
     for agent in agents:
         agent_is_up = True
         if agent['admin_state_up'] and not agent['alive']:
             agent_is_up = False
 
-        name = '%s_status' % agent['binary']
-
+        if args.host:
+            name = '%s_status' % agent['binary']
+        else:
+            name = '%s_%s_on_host_%s' % (agent['binary'],
+                                         agent['id'],
+                                         agent['host'])
 
         metric_bool(name, agent_is_up)
+        if agent_is_up:
+            services_up += 1
+        else:
+            services_down += 1
+    metric('services_up', 'uint32', services_up)
+    metric('services_down', 'uint32', services_down)
 
 
 def main(args):

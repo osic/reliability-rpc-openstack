@@ -19,6 +19,7 @@ import argparse
 from maas_common import get_auth_ref
 from maas_common import get_keystone_client
 from maas_common import get_nova_client
+from maas_common import metric
 from maas_common import metric_bool
 from maas_common import print_output
 from maas_common import status_err
@@ -53,15 +54,27 @@ def check(auth_ref, args):
 
     # return all the things
     status_ok()
+    services_up = 0
+    services_down = 0
+
     for service in services:
         service_is_up = True
 
         if service.status == 'enabled' and service.state == 'down':
             service_is_up = False
 
-        name = '%s_status' % service.binary
+        if args.host:
+            name = '%s_status' % service.binary
+        else:
+            name = '%s_on_host_%s_status' % (service.binary, service.host)
 
         metric_bool(name, service_is_up)
+        if service_is_up:
+            services_up += 1
+        else:
+            services_down += 1
+    metric('services_up', 'uint32', services_up)
+    metric('services_down', 'uint32', services_down)
 
 
 def main(args):
