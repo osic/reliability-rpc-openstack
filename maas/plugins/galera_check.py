@@ -46,10 +46,10 @@ def generate_query(host, port, output_type='status'):
     else:
         port = ''
     if output_type == 'status':
-        return ('/usr/bin/mysql --defaults-file=/root/.my.cnf '
+        return ('/usr/bin/mysql --defaults-file=/home/.my.cnf '
                 '%s%s -e "SHOW GLOBAL STATUS"') % (host, port)
     elif output_type == 'variables':
-        return ('/usr/bin/mysql --defaults-file=/root/.my.cnf '
+        return ('/usr/bin/mysql --defaults-file=/home/.my.cnf '
                 '%s%s -e "SHOW GLOBAL VARIABLES"') % (host, port)
 
 
