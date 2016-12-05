@@ -63,10 +63,7 @@ def check(auth_ref, args):
         if service.status == 'enabled' and service.state == 'down':
             service_is_up = False
 
-        if args.host:
-            name = '%s_status' % service.binary
-        else:
-            name = '%s_on_host_%s_status' % (service.binary, service.host)
+        name = '%s_status,host=%s' % (service.binary, service.host)
 
         metric_bool(name, service_is_up)
         if service_is_up:
